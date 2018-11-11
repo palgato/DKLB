@@ -1,28 +1,23 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class FileHandler {
 
-    /* Read from File - reads a Leaderboard file and returns a Hashmap of Players and their wins */
-    public static Map<String, Wins> readFromFile(String filePath){
+    /* Read from File - reads a LeaderBoard file and returns a HashMap of Players and their wins */
+    public static Map<String, Player> readFromFile(String filePath) {
         String line;
-        //int numLines = 0;
-        Map<String, Wins> loadedPlayers;
-        loadedPlayers = new HashMap<String, Wins>();
-
+        Map<String, Player> loadedPlayers = new HashMap<>();
         try {
             FileReader fr = new FileReader(filePath);
             BufferedReader br = new BufferedReader(fr);
 
             while ((line = br.readLine()) != null) {
                 List<String> aList = new ArrayList<>(Arrays.asList(line.split(",")));
-                String n = aList.get(0);
-                Wins w = new Wins(Integer.parseInt(aList.get(1)));
-                loadedPlayers.put(n,w);
-                //numLines++;
+                String name = aList.get(0);
+                int win = Integer.parseInt(aList.get(1));
+                boolean act = Boolean.parseBoolean(aList.get(2));
+                Player player = new Player(win, act);
+                loadedPlayers.put(name, player);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -31,34 +26,31 @@ public class FileHandler {
     }
 
     /* Write to File - adds a Player and their number of wins to a LeaderBoard */
-    public static void writeToFile(LeaderBoard leaderBoard, String writeName, int writeWins) {
+    public static void writeToFile(LeaderBoard leaderBoard) {
 
-        //Create a writer which will write information to a file
-        FileWriter writer = null;
+        String writeName;
+        int writeWins;
+        boolean writeActive;
 
         try {
-            //Pass the LeaderBoard filePath to the FileWriter
-            writer = new FileWriter(leaderBoard.filePath,true);
+            FileWriter fw = new FileWriter(leaderBoard.filePath);
 
-            //Append the name and number of wins to the leaderBoard file as comma separated values
-            writer.append(writeName);
-            writer.append(",");
-            writer.append(Integer.toString(writeWins));
-            writer.append('\n');
+            //For each item in the boardPlayers HashMap, write the data to the file as comma separated values
+            for (String key : leaderBoard.boardPlayers.keySet()) {
+                writeName = key;
+                writeWins = leaderBoard.boardPlayers.get(key).wins;
+                writeActive = leaderBoard.boardPlayers.get(key).active;
 
-            //Print out successful added line of leaderBoard file
+                fw.write(writeName + ",");
+                fw.write(Integer.toString(writeWins) + ",");
+                fw.write(Boolean.toString(writeActive));
+                fw.write("\n");
+            }
+            fw.flush();
+            fw.close();
 
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-
-                //Finish writing to the file and close it
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

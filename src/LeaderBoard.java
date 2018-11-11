@@ -1,84 +1,88 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class LeaderBoard
 {
     String filePath;
+    Map<String, Player> boardPlayers;
 
     public LeaderBoard(String leaderBoardFilePath) {
         filePath = leaderBoardFilePath;
+        boardPlayers = FileHandler.readFromFile(filePath);
     }
+
     public static void main(String[] args)
     {
-        //Create a new LeaderBoard with a specific file name
+        //Create a new LeaderBoard with a specific file name and load any players in it to memory
         LeaderBoard unoBoard = new LeaderBoard("unoBoard.csv");
 
-        //Load a HashMap with players from the LeaderBoard's CSV file
-        //Then display the list of players and their wins
-        Map<String, Wins> loadedPlayers = new HashMap<String, Wins>(Loader.loadLeaderBoard(unoBoard));
-        for (String p : loadedPlayers.keySet()) {
-            System.out.println("Player: " + p + "; Wins: " + loadedPlayers.get(p).wins);
-        }
-        System.out.println("Loaded CSV file: " + unoBoard.filePath);
+        //Display the LeaderBoard, i.e. Players and their information
+        displayPlayers(unoBoard);
 
-        //Add a player to the board and display updated LeaderBoard
+        //Add some new players to the board and display updated LeaderBoard
         unoBoard.addPlayer("Sherlock");
-        Map<String, Wins> addLoadedPlayers = new HashMap<String, Wins>(Loader.loadLeaderBoard(unoBoard));
-        for (String p : addLoadedPlayers.keySet()) {
-            System.out.println("Player: " + p + "; Wins: " + addLoadedPlayers.get(p).wins);
-        }
-        System.out.println("Added Player and updated CSV file: " + unoBoard.filePath);
+        unoBoard.addPlayer("Watson");
+        displayPlayers(unoBoard);
 
-        //Create a HashMap of players and their wins
-        //Create a LeaderBoard CSV file with the HashMap
-        Map<String, Wins> unoPlayers = new HashMap<String, Wins>();
-        unoPlayers.put("Chile",new Wins(10));
-        unoPlayers.put("Argentina",new Wins(5));
-        unoPlayers.put("Peru",new Wins(-10));
+        //Update the status of a Player and display updated LeaderBoard
+        unoBoard.updatePlayerStatus("Dave",false);
+        displayPlayers(unoBoard);
 
-        //Create the LeaderBoard with the set of Players
-        unoBoard.createLeaderBoard(unoPlayers);
-        for (String p : unoPlayers.keySet()) {
-            System.out.println("Player: " + p + "; Wins: " + unoPlayers.get(p).wins);
-        }
-        System.out.println("Added new Players and updated CSV file: " + unoBoard.filePath);
-
+        //Add a win to a Player and display updated LeaderBoard
+        unoBoard.playerWin("Juan");
+        displayPlayers(unoBoard);
     }
 
-    /* Create a LeaderBoard file and add in a set of Players */
-    public void createLeaderBoard(Map<String, Wins> listOfPlayers) {
+    private static void displayPlayers(LeaderBoard leaderBoard) {
 
-        //Cycle through each Player in the HashMap and write to the LeaderBoard file
-        for (String key : listOfPlayers.keySet()) {
-            int wins = listOfPlayers.get(key).getWins();
-            FileHandler.writeToFile(this, key, wins);
+        //For each Player in the boardPlayers HashMap, display Name, Wins and Active values
+        for (String key : leaderBoard.boardPlayers.keySet()) {
+            int pWins = leaderBoard.boardPlayers.get(key).wins;
+            boolean pActive = leaderBoard.boardPlayers.get(key).active;
+            System.out.println("Player: " + key + "; Wins: " + pWins + "; Active: " + pActive);
         }
-
+        System.out.println("Displaying board players: " + leaderBoard.filePath);
     }
 
     /* Add a Player - Loads a LeaderBoard and adds a new Player to it */
-    public void addPlayer(String newPlayer) {
+    public void addPlayer(String newPlayerName) {
 
-        //Add the player to the file and allocate '0' wins
-        FileHandler.writeToFile(this, newPlayer, 0);
+        //Create a new Player with 0 wins and set as active
+        Player newPlayer = new Player(0, true);
 
+        //Add the player to the LeaderBoard HashMap and write to the CSV file
+        boardPlayers.put(newPlayerName,newPlayer);
+        FileHandler.writeToFile(this);
     }
 
     /* Remove a Player - takes a Player and removes them from the LeaderBoard */
-    public void removePlayer(String player) {
-        //
+    public void updatePlayerStatus(String updateName, boolean newStatus) {
 
+        //Check if Player to update exists, update their status and write to the CSV file
+        if (boardPlayers.containsKey(updateName)) {
+            Player updatedPlayer = boardPlayers.get(updateName);
+            updatedPlayer.updateStatus(newStatus);
+            boardPlayers.replace(updateName, updatedPlayer);
+
+            FileHandler.writeToFile(this);
+        } else {
+            //If the Player doesn't exist, print out message saying so
+            System.out.println("Player: " + updateName + " does not exist");
+        }
     }
 
     /* Add a win to a Player - takes a name and creates a player in the LeaderBoard */
-    public void playerWin(String name) {
-        //find the player in CSV file
+    public void playerWin(String winnerName) {
 
-        //retrieve the number of wins from the CSV file
+        //Check if winning Player exists, add their win and write to the CSV file
+        if (boardPlayers.containsKey(winnerName)) {
+            Player winner = boardPlayers.get(winnerName);
+            winner.addWin();
+            boardPlayers.replace(winnerName, winner);
 
-        //increment the number of wins
-
-        //update the CSV file with the new value
-
+            FileHandler.writeToFile(this);
+        } else {
+            //If the Player doesn't exist, print out message saying so
+            System.out.println("Player: " + winnerName + " does not exist");
+        }
     }
 }
