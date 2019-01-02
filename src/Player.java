@@ -1,4 +1,4 @@
-public class Player {
+public class Player implements Comparable<Player> {
 
     int wins;
     boolean active;
@@ -9,6 +9,16 @@ public class Player {
         active = isActive;
     }
 
+    public Integer getWins() {
+
+        return wins;
+    }
+
+    public Boolean getActive() {
+
+        return active;
+    }
+
     public void addWin() {
 
         wins++;
@@ -17,5 +27,10 @@ public class Player {
     public void updateStatus(boolean newStatus) {
 
         active = newStatus;
+    }
+
+    @Override
+    public int compareTo(Player player) {
+        return player.getWins() - this.wins;
     }
 }
