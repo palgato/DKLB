@@ -19,7 +19,7 @@ public class LeaderBoard
         LeaderBoard unoBoard = new LeaderBoard("unoBoard.csv");
 
         //Display the LeaderBoard, i.e. Players and their information
-        displayPlayers(unoBoard);
+        displayBoard(unoBoard);
 
         //Add some new players to the board and display updated LeaderBoard
         //unoBoard.addPlayer("Sherlock");
@@ -35,30 +35,15 @@ public class LeaderBoard
         //displayPlayers(unoBoard);
 
         //Sort the list of Players based on number of wins
-        sortBoardPlayers(unoBoard);
+        //sortBoardPlayers(unoBoard);
 
         //Show a Player
         //unoBoard.showPlayer("Charlie");
         //unoBoard.showPlayer("Dave");
     }
 
-    /* Display all active Players from a LeaderBoard */
-    private static void displayPlayers(LeaderBoard leaderBoard) {
-
-        //For each active Player in the boardPlayers HashMap, display Name, Wins and Active values
-        System.out.println("*******************************");
-        System.out.println("Displaying Players....");
-        for (String key : leaderBoard.boardPlayers.keySet()) {
-            int pWins = leaderBoard.boardPlayers.get(key).wins;
-            boolean pActive = leaderBoard.boardPlayers.get(key).active;
-            if(pActive) {
-                System.out.println("Player: " + key + "; Wins: " + pWins);
-            }
-        }
-    }
-
-    /* Sort the loaded players in descending Wins value */
-    public static void sortBoardPlayers(LeaderBoard leaderBoard) {
+    /* Displays a sorted LeaderBoard of active Players in descending Wins value */
+    public static void displayBoard(LeaderBoard leaderBoard) {
 
         //Add LeaderBoard Players to a List and sort them in descending order of Wins
         List<Player> sortedBoardplayers = new ArrayList<>(leaderBoard.boardPlayers.values());
@@ -108,7 +93,7 @@ public class LeaderBoard
         }
     }
 
-    /* Remove a Player - takes a Player and removes them from the LeaderBoard */
+    /* Update a Player status - takes a Player and updates their status in the LeaderBoard */
     public void updatePlayerStatus(String updateName, boolean newStatus) {
 
         //Check if Player to update exists, update their status and write to the CSV file
