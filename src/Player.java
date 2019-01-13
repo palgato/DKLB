@@ -1,31 +1,26 @@
 public class Player implements Comparable<Player> {
 
-    int wins;
-    boolean active;
+    private int wins;
+    private boolean active;
 
     public Player(int numberOfWins, boolean isActive) {
-
         wins = numberOfWins;
         active = isActive;
     }
 
-    public Integer getWins() {
-
+    public int getWins() {
         return wins;
     }
 
-    public Boolean getActive() {
-
+    public boolean getActive() {
         return active;
     }
 
     public void addWin() {
-
         wins++;
     }
 
     public void updateStatus(boolean newStatus) {
-
         active = newStatus;
     }
 

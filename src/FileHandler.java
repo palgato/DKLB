@@ -36,13 +36,13 @@ public class FileHandler {
         boolean writeActive;
 
         try {
-            FileWriter fw = new FileWriter(leaderBoard.filePath);
+            FileWriter fw = new FileWriter(leaderBoard.getFilePath());
 
             //For each item in the boardPlayers HashMap, write the data to the file as comma separated values
-            for (String key : leaderBoard.boardPlayers.keySet()) {
+            for (String key : leaderBoard.getBoardPlayers().keySet()) {
                 writeName = key;
-                writeWins = leaderBoard.boardPlayers.get(key).wins;
-                writeActive = leaderBoard.boardPlayers.get(key).active;
+                writeWins = leaderBoard.getBoardPlayers().get(key).getWins();
+                writeActive = leaderBoard.getBoardPlayers().get(key).getActive();
 
                 fw.write(writeName + ",");
                 fw.write(Integer.toString(writeWins) + ",");
