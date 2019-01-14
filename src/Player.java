@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Player implements Comparable<Player> {
 
     private int wins;
@@ -22,6 +24,20 @@ public class Player implements Comparable<Player> {
 
     public void updateStatus(boolean newStatus) {
         active = newStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return wins == player.wins &&
+                active == player.active;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(wins, active);
     }
 
     @Override

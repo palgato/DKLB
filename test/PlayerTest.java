@@ -25,4 +25,11 @@ public class PlayerTest {
         testPlayer.updateStatus(false);
         assertEquals(false, testPlayer.getActive());
     }
+
+    @Test
+    public void testEquals() {
+        Player test1 = new Player(5,true);
+        assertEquals(test1,testPlayer);
+
+    }
 }
